@@ -39,33 +39,17 @@
 							</tr>
 						</thead>
 						<tbody>
+							{% for item in function %}
 							<tr>
-                                <td>0x31dcc</td>
-                                <td>sub_31dcc</td>
+                                <td>{{ item.addr }}</td>
+                                <td>{{ item.name }}</td>
 								<td>
 									<div class="layui-inline">
 										<button class="layui-btn layui-btn-mini layui-btn-normal  edit-btn" data-id="1" data-url="../funchange"><i class="layui-icon">&#xe642;</i></button>
 									</div>
 								</td>
 							</tr>
-							<tr>
-								<td>0x31dcc</td>
-                                <td>sub_31dcc</td>
-								<td>
-									<div class="layui-inline">
-										<button class="layui-btn layui-btn-mini layui-btn-normal  edit-btn" data-id="1" data-url="menu-add2.html"><i class="layui-icon">&#xe642;</i></button>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>0x31dcc</td>
-                                <td>sub_31dcc</td>
-								<td>
-									<div class="layui-inline">
-										<button class="layui-btn layui-btn-mini layui-btn-normal  edit-btn" data-id="1" data-url="menu-add2.html"><i class="layui-icon">&#xe642;</i></button>
-									</div>
-								</td>
-							</tr>
+							{% endfor %}
 						</tbody>
 					</table>
 				</div>

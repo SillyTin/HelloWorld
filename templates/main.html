@@ -17,8 +17,9 @@
 					<div class="layui-inline">
 						<input type="file" id="file-input" name="file-input" placeholder="请输入文件" autocomplete="off" class="layui-input" />
                     </div>
-                    <input type="submit" value="upload" />
-					<button class="layui-btn layui-btn-normal" id="upload" name="upload" onchange="handler()">上传</button>
+                    <div class="layui-inline">
+                        <input type="submit" value="上传" class="layui-input" />
+                    </div>
 				</div>
 			</form>
         <script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
@@ -35,9 +36,8 @@
         <script type="text/javascript" charset="utf-8">
         var str = '{{ main }}';
         if( str == 'upload over!'){
-            alert("上传成功！");
+            alert("分析成功！");
         }
         </script>
     </body>
 </html>
-    

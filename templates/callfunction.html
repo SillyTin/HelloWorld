@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>Firmware分析系统</title>
+		<link rel="stylesheet" type="text/css" href="/static/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/admin.css" />
+	</head>
+
+	<body style="height: 100%;">
+		<div style="width:100%;height:100%;">
+		    <svg id="svg-canvas" name="svg-canvas" style="width:100%;height:100%;"></svg>
+		</div>
+		<script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/static/js/common.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/static/js/dagre-d3.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+        <style id="ccs">
+        g.type-TK > rect {
+            fill: #fff;
+            }
+
+        text {
+            font-weight: 300;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .node rect {
+            stroke: #999;
+            fill: #fff;
+            stroke-width: 1.5px;
+        }
+
+        .edgePath path {
+            stroke: #333;
+            stroke-width: 1.5px;
+        }
+        </style>
+        <script type="text/javascript" charset="utf-8">
+            var g = new dagreD3.graphlib.Graph()
+                .setGraph({})
+                .setDefaultEdgeLabel(function() { return {}; });
+            g.setNode("0", { label:"0" , class: "type-TK"});
+            g.setNode("1", { label:"1" , class: "type-TK"});
+            g.setNode("2", { label:"2" , class: "type-TK"});
+            g.setEdge("0", "1");
+            g.setEdge("1", "2");
+            // Create the renderer
+            var render = new dagreD3.render();
+
+            // Set up an SVG group so that we can translate the final graph.
+            var svg = d3.select("#svg-canvas");
+            svg.select("g").remove();
+            var svgGroup = svg.append("g");
+
+            var inner = svg.select("g");
+            var zoom = d3.zoom().on("zoom", function () { //添加鼠标滚轮放大缩小事件
+                inner.attr("transform", d3.event.transform);
+            });
+            svg.call(zoom);
+            render(d3.select("svg g"), this.g); //渲染节点
+            let max = svg._groups[0][0].clientWidth>svg._groups[0][0].clientHeight?svg._groups[0][0].clientWidth:svg._groups[0][0].clientHeight;
+            var initialScale = max/779; //initialScale元素放大倍数，随着父元素宽高发生变化时改变初始渲染大小
+            var tWidth = (svg._groups[0][0].clientWidth  - this.g.graph().width * initialScale) / 2; //水平居中
+            var tHeight = (svg._groups[0][0].clientHeight  - this.g.graph().height * initialScale) / 2; //垂直居中
+            svg.call(zoom.transform, d3.zoomIdentity.translate(tWidth, tHeight).scale(initialScale)); //元素水平垂直居中
+
+            // Run the renderer. This is what draws the final graph.
+            render(d3.select("svg g"), g);
+
+        </script>
+	</body>
+
+</html>
