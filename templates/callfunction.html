@@ -12,6 +12,15 @@
 	</head>
 
 	<body style="height: 100%;">
+        <form class="layui-form" action="" method="post">
+            {% csrf_token %}
+			<div class="layui-form-item" style="padding: 20px;">
+				<div class="layui-inline">
+					<input type="text" name="name" placeholder="请输入函数名" autocomplete="on" class="layui-input">							
+				</div>
+				<button class="layui-btn layui-btn-normal" lay-submit="search">确认</button>
+			</div>
+		</form>
 		<div style="width:100%;height:100%;">
 		    <svg id="svg-canvas" name="svg-canvas" style="width:100%;height:100%;"></svg>
 		</div>
@@ -45,11 +54,17 @@
             var g = new dagreD3.graphlib.Graph()
                 .setGraph({})
                 .setDefaultEdgeLabel(function() { return {}; });
-            g.setNode("0", { label:"0" , class: "type-TK"});
-            g.setNode("1", { label:"1" , class: "type-TK"});
-            g.setNode("2", { label:"2" , class: "type-TK"});
-            g.setEdge("0", "1");
-            g.setEdge("1", "2");
+            var callgraphedge = {{ callfunctionedge|safe }};
+            var callgraphnode = {{ callfunctionnode|safe }};
+            for(var node in callgraphnode){
+                var node1 = JSON.parse(callgraphnode[node])
+                g.setNode(node1.num ,{ label: node1.name , class: "type-TK"});
+            }
+            for(var edge in callgraphedge){
+                var edge1 = JSON.parse(callgraphedge[edge])
+                g.setEdge(edge1.start,edge1.end)
+            }
+
             // Create the renderer
             var render = new dagreD3.render();
 

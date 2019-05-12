@@ -3,6 +3,15 @@ import os
 from graphviz import Digraph
 from hello import models
 
+funcs = {}
+cg = {}
+cfg = {}
+cg_path = []
+cfg_path = {}
+
+class CfgPath:
+	pass
+
 def load_binary(path):
 
     # Load binary file
@@ -14,17 +23,17 @@ def load_binary(path):
 
 def get_func(bv):
 
-    # Get functions
-    funcs = {}
-    for func in bv.functions:
-        addr = hex(int(func.start))
-        funcs[addr] = func.symbol.name
+	# Get functions
+	for func in bv.functions:
+		addr = hex(int(func.start))
+		funcs[addr] = func.symbol.name
 
-    #store in db
-    for i in funcs.keys():
-        models.FuncInfo.objects.create(addr = i, name = funcs[i])
+	#store in db
+	models.FuncInfo.objects.all().delete()	
+	for i in funcs.keys():
+		models.FuncInfo.objects.create(addr = i, name = funcs[i])
 
-    print("get func")
+	print("get func")
 
 def get_inst(bv):
     
@@ -47,7 +56,6 @@ def get_inst(bv):
 def get_CG(bv):
 
 	# Create CG
-	cg = {}
 	for func in bv.functions:
 		caller = hex(int(func.start))
 		cg[caller] = []
@@ -61,12 +69,25 @@ def get_CG(bv):
 				if des in funcs.keys() and des not in cg[caller]:
 					cg[caller].append(des)
 
-	# f = open("%scg.txt" % (path) , "w")
-	# for caller in cg.keys():
-	# 	if cg[caller] != []:
-	# 		for callee in cg[caller]:
-	# 			f.write("%s -> %s\n" % (caller , callee))
-	# f.close()
+	models.CallGraphEdge.objects.all().delete()
+	models.CallGraphNode.objects.all().delete()
+	i = 0
+	cgnode = {}
+	cgedge = []
+	for caller in cg.keys():
+		if cg[caller] != []:
+			if caller not in cgnode.keys():
+				cgnode[caller] = i
+				i += 1
+			for callee in cg[caller]:
+				if callee not in cgnode.keys():
+					cgnode[callee] = i
+					i += 1
+				cgedge.append((cgnode[caller],cgnode[callee]))
+	for node in cgnode.keys():
+		models.CallGraphNode.objects.create(num = cgnode[node] , name = funcs[node])
+	for (i, j) in cgedge:
+		models.CallGraphEdge.objects.create(start = i, end = j)
 
 	print("get cg")
 
@@ -74,7 +95,6 @@ def get_CG(bv):
 def get_cfg(bv):
     
 	# Create CFG
-	cfg = {}
 	for func in bv.functions:
 		func_name = hex(int(func.start))
 		cfg[func_name] = {}
@@ -105,7 +125,6 @@ def get_cfg(bv):
 def get_func_path(cg):
     
 	# Find path in func level
-	cg_path = []
 	start = '0x100a0'
 	end = '0xd69c'
 	findpath_cg(start, end, cg, cg_path)
@@ -123,7 +142,6 @@ def get_func_path(cg):
 def get_bb_path(cg_path, cfg):
     
 	# Find path intro func in bb level
-	cfg_path = {}
 
 	# path = path +'cfg_path/'
 	# isExists=os.path.exists(path)

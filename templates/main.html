@@ -11,17 +11,20 @@
 	</head>
 	<body>
 		<div class="wrap-container welcome-container">
-            <form class="layui-form" enctype="multipart/form-data" action="" method="post">
+            <h1 style="text-align: center;margin: auto;padding: 100px;">Firmware分析系统</h1>
+            <form class="layui-form" enctype="multipart/form-data" action="" method="post" >
                 {% csrf_token %}
-				<div class="layui-form-item">
+				<div class="layui-form-item" style="text-align: center;margin: auto;padding: 100px;">
 					<div class="layui-inline">
-						<input type="file" id="file-input" name="file-input" placeholder="请输入文件" autocomplete="off" class="layui-input" />
+                        <input type="file" id="file-input" name="file-input" class="layui-input"/>
                     </div>
                     <div class="layui-inline">
-                        <input type="submit" value="上传" class="layui-input" />
+                        <input type="submit" value="上传" class="layui-btn" />
                     </div>
-				</div>
-			</form>
+                </div>
+            </form>
+            
+            
         <script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
         <script src="/static/lib/echarts/echarts.js"></script>
         <script type="text/javascript" charset="utf-8">
